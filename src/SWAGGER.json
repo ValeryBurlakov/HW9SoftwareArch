@@ -1,0 +1,223 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Заказ ресурсов в облаке",
+    "version": "0.0.1"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:80/api/v1",
+      "description": "local server"
+    }
+  ],
+  "paths": {
+    "/clouds": {
+      "get": {
+        "summary": "Метод получения списка ресурсов на облако",
+        "tags": [
+          "Clouds"
+        ],
+        "operarionId": "getAllClouds",
+        "responses": {
+          "200": {
+            "description": "успешный ответ",
+            "content": {
+              "aplication/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Clouds"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "все остальное",
+            "content": {
+              "aplication/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Метод создания заказа на облако",
+        "tags": [
+          "Clouds"
+        ],
+        "operationId": "createCloud",
+        "requestBody": {
+          "content": {
+            "aplication/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Cloud"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "успешный ответ",
+            "content": {
+              "aplication/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Cloud"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Некорректный запрос",
+            "content": {
+              "aplication/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Ошибка сервера",
+            "content": {
+              "aplication/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/clouds/{cloud_id}": {
+      "get": {
+        "summary": "получение облака по id",
+        "tags": [
+          "Clouds"
+        ],
+        "operationId": "getCloudById",
+        "parameters": [
+          {
+            "name": "cloud_id",
+            "in": "path",
+            "required": true,
+            "description": "идентификатор заказа",
+            "schema": {
+              "type": "string"
+            },
+            "example": "f123s123"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "успешный ответ заказа облака по айди",
+            "content": {
+              "aplication/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Cloud"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Некорректный запрос",
+            "content": {
+              "aplication/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Нет такого id",
+            "content": {
+              "aplication/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Ошибка сервера",
+            "content": {
+              "aplication/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Все остальное",
+            "content": {
+              "aplication/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Cloud": {
+        "type": "object",
+        "required": [
+          "OS",
+          "RAM",
+          "CPU",
+          "id_client"
+        ],
+        "properties": {
+          "OS": {
+            "type": "string",
+            "enum": [
+              "Windows",
+              "Linux"
+            ]
+          },
+          "RAM": {
+            "type": "string",
+            "example": 256
+          },
+          "CPU": {
+            "type": "string",
+            "example": 8,
+            "description": "кол-во ядер"
+          },
+          "id_client": {
+            "type": "string",
+            "example": "us00000001er"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": [
+          "code",
+          "message"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "Clouds": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Cloud"
+        }
+      }
+    }
+  }
+}
